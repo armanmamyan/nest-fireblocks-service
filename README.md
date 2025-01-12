@@ -1,5 +1,8 @@
 # NestJS API with Fireblocks Integration
 
+![Project Banner](https://raw.githubusercontent.com/armanmamyan/nest-fireblocks-service/main/banner.png)
+
+
 This project is a NestJS-based REST API that provides user authentication, Stripe payment handling, and subscription management. It leverages TypeORM for database operations, JWT for token-based authentication, and integrates Stripe to handle subscriptions, invoices, and payment processing.
 
 ## Features
