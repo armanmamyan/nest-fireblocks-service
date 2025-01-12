@@ -96,48 +96,48 @@ Below is an overview of the key endpoints. For detailed information, refer to th
 
 ### Function Explanations
 
-1.  **onModuleInit()**Initializes the Fireblocks service on module start. It calls processInstanceReading(), which reads your private keys from a secure source (e.g., an S3 bucket) and creates two Fireblocks SDK instances:
+1.  **onModuleInit()** Initializes the Fireblocks service on module start. It calls processInstanceReading(), which reads your private keys from a secure source (e.g., an S3 bucket) and creates two Fireblocks SDK instances:
     
     *   **Signer** for creating vault accounts, initiating transfers, etc.
         
     *   **Viewer** for read-only operations.
         
-2.  **processInstanceReading()**Downloads and extracts the private key files, then instantiates the Fireblocks Signer and Viewer SDKs. If something goes wrong (e.g., missing files), it logs an error.
+2.  **processInstanceReading()** Downloads and extracts the private key files, then instantiates the Fireblocks Signer and Viewer SDKs. If something goes wrong (e.g., missing files), it logs an error.
     
-3.  **createFireblocksAccountWithAssets(userId, userEmail)**Creates a Fireblocks Vault account named after the user, and then creates/activates a default list of supported assets in that account. Returns the newly created Vault account ID and the list of assets.
+3.  **createFireblocksAccountWithAssets(userId, userEmail)** Creates a Fireblocks Vault account named after the user, and then creates/activates a default list of supported assets in that account. Returns the newly created Vault account ID and the list of assets.
     
-4.  **createVault(userId, userEmail)**Creates the underlying Fireblocks Vault account with a name (\_). This function is primarily used internally by createFireblocksAccountWithAssets().
+4.  **createVault(userId, userEmail)** Creates the underlying Fireblocks Vault account with a name (\_). This function is primarily used internally by createFireblocksAccountWithAssets().
     
-5.  **getVaultAccountDetails(vaultAccountId)**Retrieves detailed information (balances, addresses, etc.) about a given Vault account by its ID.
+5.  **getVaultAccountDetails(vaultAccountId)** Retrieves detailed information (balances, addresses, etc.) about a given Vault account by its ID.
     
-6.  **getSupportedListOfAssets()**Fetches the list of assets supported by Fireblocks for the configured environment (testnet vs. mainnet). Useful for discovery or debugging.
+6.  **getSupportedListOfAssets()** Fetches the list of assets supported by Fireblocks for the configured environment (testnet vs. mainnet). Useful for discovery or debugging.
     
-7.  **activateVaultWallet(vaultAccountId, assetId)**Activates the wallet for a specific asset within a Vault account. Necessary for some blockchains (e.g., Stellar, Solana) that require an on-chain “activation” transaction.
+7.  **activateVaultWallet(vaultAccountId, assetId)** Activates the wallet for a specific asset within a Vault account. Necessary for some blockchains (e.g., Stellar, Solana) that require an on-chain “activation” transaction.
     
-8.  **createUserAssets(vaultAccountId, idempotencyKey?)**Creates and activates all assets in the configured “supported assets” list for a given vault. If idempotencyKey is provided, Fireblocks can ensure duplicate calls are handled safely.
+8.  **createUserAssets(vaultAccountId, idempotencyKey?)** Creates and activates all assets in the configured “supported assets” list for a given vault. If idempotencyKey is provided, Fireblocks can ensure duplicate calls are handled safely.
     
-9.  **getAccountBasedDepositAddress(vaultAccountId, assetId)**Retrieves deposit addresses for a specific asset in the user’s Vault account.Used when you want to display or store an address to receive deposits.
+9.  **getAccountBasedDepositAddress(vaultAccountId, assetId)** Retrieves deposit addresses for a specific asset in the user’s Vault account.Used when you want to display or store an address to receive deposits.
     
-10.  **updateVaultAccountAssetBalance(vaultAccountId)**Forces an update of asset balances in the user’s Vault account. This can be used if Fireblocks’ auto-sync is slow or you want immediate confirmation of funds.
+10.  **updateVaultAccountAssetBalance(vaultAccountId)** Forces an update of asset balances in the user’s Vault account. This can be used if Fireblocks’ auto-sync is slow or you want immediate confirmation of funds.
     
-11.  **getTransactionFee(vaultAccountId, withdrawalDetails)**Estimates the total transaction fees for a specific withdrawal (including network fee plus an optional service fee). This helps in showing users the expected cost before they proceed.
+11.  **getTransactionFee(vaultAccountId, withdrawalDetails)** Estimates the total transaction fees for a specific withdrawal (including network fee plus an optional service fee). This helps in showing users the expected cost before they proceed.
     
-12.  **processVaultAccountCardPayment(vaultAccountId, withdrawalDetails)**Initiates a transfer from a user’s Vault account to a specified address or another Vault account. Typically used when a user pays for an internal service (like a card purchase).
+12.  **processVaultAccountCardPayment(vaultAccountId, withdrawalDetails)** Initiates a transfer from a user’s Vault account to a specified address or another Vault account. Typically used when a user pays for an internal service (like a card purchase).
     
-13.  **processExternalWithdrawTransaction(vaultAccountId, withdrawalDetails)**Handles a user withdrawal to an external (off-Fireblocks) address. It calculates and collects a service fee (sending it to a dedicated fee-collection account) before sending the remainder to the target address.
+13.  **processExternalWithdrawTransaction(vaultAccountId, withdrawalDetails)** Handles a user withdrawal to an external (off-Fireblocks) address. It calculates and collects a service fee (sending it to a dedicated fee-collection account) before sending the remainder to the target address.
     
-14.  **getTransactionById(transactionId)**Retrieves the status and details of a transaction by its Fireblocks ID. Helpful for polling or logging transaction outcomes.
+14.  **getTransactionById(transactionId)** Retrieves the status and details of a transaction by its Fireblocks ID. Helpful for polling or logging transaction outcomes.
     
-15.  **getCustomerTransactions(vaultAccountId, limit, before?, after?)**Fetches transactions associated with a particular Vault account (both incoming and outgoing) in a paginated manner. This is used to generate a user’s transaction history.
+15.  **getCustomerTransactions(vaultAccountId, limit, before?, after?)** Fetches transactions associated with a particular Vault account (both incoming and outgoing) in a paginated manner. This is used to generate a user’s transaction history.
     
-16.  **triggerEmailNotification(body)**Listens for Fireblocks webhooks (or internally processed events), determines whether they’re deposits or withdrawals, and triggers relevant notifications or updates (e.g., deposit confirmations, withdrawal alerts, or order status updates).
+16.  **triggerEmailNotification(body)** Listens for Fireblocks webhooks (or internally processed events), determines whether they’re deposits or withdrawals, and triggers relevant notifications or updates (e.g., deposit confirmations, withdrawal alerts, or order status updates).
     
-17.  **manualUpdateVaultAccountAssetBalance(vaultAccountId, assetId, idempotencyKey)**Updates a single asset balance (instead of the entire vault), forcing Fireblocks to refresh the on-chain and off-chain data for that one asset.
+17.  **manualUpdateVaultAccountAssetBalance(vaultAccountId, assetId, idempotencyKey)** Updates a single asset balance (instead of the entire vault), forcing Fireblocks to refresh the on-chain and off-chain data for that one asset.
     
 
 ### Omnibus Accounts vs. Vault Accounts
 
-*   **Omnibus Account**:An omnibus account typically refers to a single address or wallet that holds multiple users’ assets in aggregate. Transactions are recorded off-chain in a separate ledger to track each user’s balance. This approach is used to minimize on-chain fees and optimize liquidity.
+*   **Omnibus Account** :An omnibus account typically refers to a single address or wallet that holds multiple users’ assets in aggregate. Transactions are recorded off-chain in a separate ledger to track each user’s balance. This approach is used to minimize on-chain fees and optimize liquidity.
     
     *   **Transfers Between Omnibus Accounts**:
         
